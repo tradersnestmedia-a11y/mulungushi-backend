@@ -136,9 +136,14 @@
                 <form id="locationForm" class="admin-form">
                     <input type="text" id="locName" placeholder="Building Name" required>
                     <input type="text" id="locType" placeholder="Category" required>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <input type="text" id="locLat" placeholder="Latitude (e.g., -14.29090)" required>
+                        <input type="text" id="locLng" placeholder="Longitude (e.g., 28.55127)" required>
+                    </div>
                     <input type="url" id="locThumb" placeholder="Thumbnail URL" required>
                     <input type="url" id="locImage" placeholder="Full Image URL" required>
                     <textarea id="locDesc" rows="3" placeholder="Description" required></textarea>
+                    <small style="color: #666; display: block; margin-top: -10px;">💡 Tip: Get coordinates from Google Maps by right-clicking on a location and selecting "What's here?"</small>
                     <button type="submit" class="btn-success">➕ Add Location</button>
                 </form>
                 <h3>Existing Locations</h3>
@@ -262,6 +267,7 @@
 
 </body>
 </html>
+
 
 
 
