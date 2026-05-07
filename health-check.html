@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check - Mulungushi Route Finder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        .status {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+        .success {
+            color: #27ae60;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .info-item:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: bold;
+            color: #3498db;
+        }
+        .button {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+        .button:hover {
+            background: #2980b9;
+        }
+        .timestamp {
+            margin-top: 20px;
+            color: #666;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status">
+            <span class="success">✅</span>
+        </div>
+        <h1>Mulungushi University Route Finder</h1>
+        <p>Static Frontend - Successfully Deployed!</p>
+        
+        <div class="info">
+            <div class="info-item">
+                <span class="label">Status:</span> Online ✅
+            </div>
+            <div class="info-item">
+                <span class="label">Type:</span> Static Website
+            </div>
+            <div class="info-item">
+                <span class="label">Files:</span> HTML, CSS, JavaScript
+            </div>
+            <div class="info-item">
+                <span class="label">Features:</span> Campus Navigation, Events, Gallery
+            </div>
+            <div class="info-item">
+                <span class="label">Backend:</span> Ready to connect
+            </div>
+        </div>
+        
+        <a href="/frontend/" class="button">Go to Main Site →</a>
+        
+        <div class="timestamp" id="timestamp"></div>
+    </div>
+    
+    <script>
+        document.getElementById('timestamp').textContent = 'Deployed: ' + new Date().toLocaleString();
+    </script>
+</body>
+</html>

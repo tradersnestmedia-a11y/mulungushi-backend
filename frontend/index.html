@@ -1,0 +1,277 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Mulungushi University Route Finder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <img id="siteLogo" src="https://via.placeholder.com/45x45?text=MU" alt="Logo">
+                <div class="brand">
+                    <h1>Mulungushi University Route Finder</h1>
+                    <p>Navigate your campus with ease</p>
+                </div>
+            </div>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-page="home"><i class="fas fa-home"></i> Home</button>
+                <button class="nav-btn" data-page="about"><i class="fas fa-info-circle"></i> About</button>
+                <button class="nav-btn" data-page="team"><i class="fas fa-users"></i> Team</button>
+                <button id="adminBtn" class="admin-btn"><i class="fas fa-lock"></i> Admin</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile FAB Menu -->
+        <!-- Mobile FAB Menu -->
+    
+    </div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage">
+        <div class="grid-container">
+            <!-- Search Panel -->
+            <div class="card">
+                <h2><i class="fas fa-search"></i> Search Locations</h2>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search buildings, offices, hostels...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+
+            <!-- Map Panel -->
+            <div class="card">
+                <h2><i class="fas fa-map"></i> Campus Map</h2>
+                <div class="map-container">
+                    <iframe id="mapFrame" src="https://www.google.com/maps?q=Mulungushi+University&output=embed"></iframe>
+                </div>
+                <div class="route-box">
+                    <label>Transport Mode:</label>
+                    <select id="transportMode">
+                        <option value="walking">🚶 Walking</option>
+                        <option value="driving">🚗 Driving</option>
+                        <option value="bicycling">🚲 Bicycling</option>
+                    </select>
+                    <a id="directionsLink" class="btn-primary" href="#" target="_blank">Get Directions <i class="fas fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+            <!-- Preview Panel -->
+            <div class="card">
+                <h2><i class="fas fa-building"></i> Location Preview</h2>
+                <div class="preview-card">
+                    <img id="previewImg" src="https://via.placeholder.com/400x200?text=Select+a+location" alt="Preview">
+                    <h3 id="previewName">Mulungushi University</h3>
+                    <p id="previewDesc">Select a location from search or gallery</p>
+                    <div class="preview-details">
+                        <span class="badge" id="previewType">Campus</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Events Slideshow -->
+        <div class="section">
+            <h2><i class="fas fa-calendar"></i> Upcoming Events</h2>
+            <div class="slideshow-container">
+                <div id="slideshow" class="slideshow"></div>
+                <button class="slide-btn prev" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+                <button class="slide-btn next" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+                <div id="slideDots" class="dots"></div>
+            </div>
+        </div>
+
+        <!-- Gallery Section -->
+        <div class="section">
+            <h2><i class="fas fa-images"></i> Campus Gallery</h2>
+            <div id="gallery" class="gallery"></div>
+        </div>
+    </div>
+
+    <!-- About Page -->
+    <div id="aboutPage" style="display: none;">
+        <div class="page-header">
+            <h1><i class="fas fa-university"></i> About Mulungushi University</h1>
+        </div>
+        <div id="aboutContent" class="about-container"></div>
+    </div>
+
+    <!-- Team Page -->
+    <div id="teamPage" style="display: none;">
+        <div class="page-header">
+            <h1><i class="fas fa-users"></i> Our Team</h1>
+            <p>Meet the dedicated team behind the university</p>
+        </div>
+        <div id="teamGrid" class="team-grid"></div>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" style="display: none;">
+        <div class="admin-nav">
+            <button class="admin-tab-btn active" data-tab="dashboard">📊 Dashboard</button>
+            <button class="admin-tab-btn" data-tab="locations">📍 Locations</button>
+            <button class="admin-tab-btn" data-tab="events">📅 Events</button>
+            <button class="admin-tab-btn" data-tab="team">👥 Team</button>
+            <button class="admin-tab-btn" data-tab="about">ℹ️ About</button>
+            <button class="admin-tab-btn" data-tab="settings">⚙️ Settings</button>
+            <button id="logoutBtn" class="logout-btn">🚪 Logout</button>
+        </div>
+
+        <div class="admin-content">
+            <div id="dashboardTab" class="admin-tab">
+                <h2>Dashboard</h2>
+                <div class="stats">
+                    <div class="stat-card"><i class="fas fa-map-marker-alt"></i><h3>Locations</h3><p id="totalLocations">0</p></div>
+                    <div class="stat-card"><i class="fas fa-calendar"></i><h3>Events</h3><p id="totalEvents">0</p></div>
+                    <div class="stat-card"><i class="fas fa-users"></i><h3>Team Members</h3><p id="totalTeam">0</p></div>
+                </div>
+            </div>
+
+            <div id="locationsTab" class="admin-tab" style="display: none;">
+                <h2>Add New Location</h2>
+                <form id="locationForm" class="admin-form">
+                    <input type="text" id="locName" placeholder="Building Name" required>
+                    <input type="text" id="locType" placeholder="Category" required>
+                    <input type="url" id="locThumb" placeholder="Thumbnail URL" required>
+                    <input type="url" id="locImage" placeholder="Full Image URL" required>
+                    <textarea id="locDesc" rows="3" placeholder="Description" required></textarea>
+                    <button type="submit" class="btn-success">➕ Add Location</button>
+                </form>
+                <h3>Existing Locations</h3>
+                <div id="locationsList" class="items-list"></div>
+            </div>
+
+            <div id="eventsTab" class="admin-tab" style="display: none;">
+                <h2>Add New Event</h2>
+                <form id="eventForm" class="admin-form">
+                    <input type="text" id="eventTitle" placeholder="Event Title" required>
+                    <input type="date" id="eventDate" required>
+                    <input type="url" id="eventImage" placeholder="Event Image URL" required>
+                    <textarea id="eventDesc" rows="3" placeholder="Description" required></textarea>
+                    <input type="text" id="eventLocation" placeholder="Location">
+                    <button type="submit" class="btn-success">➕ Add Event</button>
+                </form>
+                <h3>Existing Events</h3>
+                <div id="eventsList" class="items-list"></div>
+            </div>
+
+            <div id="teamTab" class="admin-tab" style="display: none;">
+                <h2>Add Team Member</h2>
+                <form id="teamForm" class="admin-form">
+                    <input type="text" id="memberName" placeholder="Full Name" required>
+                    <input type="text" id="memberRole" placeholder="Position/Role" required>
+                    <input type="url" id="memberImage" placeholder="Profile Image URL" required>
+                    <textarea id="memberBio" rows="3" placeholder="Bio"></textarea>
+                    <input type="email" id="memberEmail" placeholder="Email">
+                    <button type="submit" class="btn-success">👤 Add Team Member</button>
+                </form>
+                <h3>Team Members</h3>
+                <div id="teamList" class="items-list"></div>
+            </div>
+
+            <div id="aboutTab" class="admin-tab" style="display: none;">
+                <h2>Edit About Page</h2>
+                <form id="aboutFormAdmin" class="admin-form">
+                    <textarea id="aboutText" rows="8" placeholder="About content..."></textarea>
+                    <input type="url" id="aboutImageUrl" placeholder="About page image URL">
+                    <textarea id="contactText" rows="4" placeholder="Contact information..."></textarea>
+                    <button type="submit" class="btn-success">💾 Save About Page</button>
+                </form>
+            </div>
+
+            <div id="settingsTab" class="admin-tab" style="display: none;">
+                <h2>Website Settings</h2>
+                <form id="settingsFormAdmin" class="admin-form">
+                    <input type="url" id="siteLogoUrl" placeholder="Site Logo URL">
+                    <input type="text" id="siteTitle" placeholder="Site Title">
+                    <input type="text" id="siteSubtitle" placeholder="Site Subtitle">
+                    <input type="password" id="newPassword" placeholder="New Admin Password">
+                    <input type="password" id="confirmPassword" placeholder="Confirm Password">
+                    <button type="submit" class="btn-success">💾 Save Settings</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 Mulungushi University. All rights reserved.</p>
+    </footer>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div style="text-align:center; margin-bottom:20px;">
+                <i class="fas fa-user-shield" style="font-size:50px; color:#1a5490;"></i>
+            </div>
+            <h2 style="text-align:center; margin-bottom:10px;">Admin Login</h2>
+            <input type="password" id="loginPass" placeholder="Enter password" style="width:100%; padding:12px; margin:15px 0; border:1px solid #ddd; border-radius:8px;">
+            <button id="loginBtn" style="width:100%; padding:12px; background:#1a5490; color:white; border:none; border-radius:8px; cursor:pointer;">Login</button>
+            <p style="text-align:center; margin-top:15px; font-size:12px; color:#888;"></p>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content edit-modal">
+            <span class="close-modal">&times;</span>
+            <h2 id="editTitle">Edit Item</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                <input type="hidden" id="editType">
+                <div id="editFields"></div>
+                <button type="submit" class="btn-success" style="width:100%; margin-top:15px;">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Lightbox Modal -->
+    <div id="lightboxModal" class="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img class="lightbox-content" id="lightboxImg" alt="Full size image">
+        <div id="lightboxCaption" class="lightbox-caption"></div>
+    </div>
+
+    <script src="./js/app.js"></script>
+
+    <!-- Floating Action Button - Mobile Only (Hamburger Menu) -->
+    <div class="fab-mobile" id="fabMobile">
+        <button class="fab-mobile-btn" id="fabMobileBtn">
+            <i class="fas fa-bars"></i>
+        </button>
+        <div class="fab-mobile-menu" id="fabMobileMenu">
+            <button class="fab-mobile-item" data-page="home">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="fab-mobile-item" data-page="about">
+                <i class="fas fa-info-circle"></i> About
+            </button>
+            <button class="fab-mobile-item" data-page="team">
+                <i class="fas fa-users"></i> Team
+            </button>
+            <button class="fab-mobile-item" id="fabAdminBtn">
+                <i class="fas fa-lock"></i> Admin
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,24 @@
+﻿{
+  "name": "mulungushi-route-finder",
+  "version": "1.0.0",
+  "description": "Mulungushi University Route Finder - Campus Navigation System",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "nodemon backend/server.js",
+    "frontend": "cd frontend && npx serve",
+    "build": "echo 'Building static site...'"
+  },
+  "keywords": ["campus", "navigation", "university", "route-finder"],
+  "author": "Mulungushi University",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "pg": "^8.11.0",
+    "cors": "^2.8.5",
+    "bcrypt": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
