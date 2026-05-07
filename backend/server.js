@@ -6,27 +6,23 @@ const bcrypt = require('bcrypt');
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Database connection
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
+    connectionString: process.env.DATABASE_URL || 'postgresql://mulungushi_user:dPiadrfHI5A0YxpAvHXru6FZ4Zi3iVth@dpg-d7r1d0l7vvec73e2nfmg-a.oregon-postgres.render.com/mulungushi_db',
     ssl: { rejectUnauthorized: false }
 });
 
-// Test database connection
 pool.connect((err, client, release) => {
     if (err) {
-        console.error('Database connection error:', err.stack);
+        console.error('Database connection error:', err.message);
     } else {
         console.log('Connected to PostgreSQL database');
         release();
     }
 });
 
-// Root route
 app.get('/', (req, res) => {
     res.json({ message: 'Mulungushi University API is running', status: 'ok' });
 });
@@ -47,10 +43,10 @@ app.post('/api/locations', async (req, res) => {
     const { id, name, type, lat, lng, thumbnail, image, maps_link, description } = req.body;
     try {
         const result = await pool.query(
-            'INSERT INTO locations (id, name, type, lat, lng, thumbnail, image, maps_link, description) VALUES (, , , , , , , , ) RETURNING *',
+            'INSERT INTO locations (id, name, type, lat, lng, thumbnail, image, maps_link, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
             [id, name, type, lat, lng, thumbnail, image, maps_link, description]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true, id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add location' });
@@ -62,11 +58,11 @@ app.put('/api/locations/:id', async (req, res) => {
     const { id } = req.params;
     const { name, type, lat, lng, thumbnail, image, maps_link, description } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE locations SET name=, type=, lat=, lng=, thumbnail=, image=, maps_link=, description=, updated_at=CURRENT_TIMESTAMP WHERE id= RETURNING *',
+        await pool.query(
+            'UPDATE locations SET name=$1, type=$2, lat=$3, lng=$4, thumbnail=$5, image=$6, maps_link=$7, description=$8, updated_at=CURRENT_TIMESTAMP WHERE id=$9',
             [name, type, lat, lng, thumbnail, image, maps_link, description, id]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update location' });
@@ -77,7 +73,7 @@ app.put('/api/locations/:id', async (req, res) => {
 app.delete('/api/locations/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await pool.query('DELETE FROM locations WHERE id = ', [id]);
+        await pool.query('DELETE FROM locations WHERE id = $1', [id]);
         res.json({ success: true });
     } catch (err) {
         console.error(err);
@@ -100,11 +96,11 @@ app.get('/api/events', async (req, res) => {
 app.post('/api/events', async (req, res) => {
     const { id, title, event_date, image, description, location } = req.body;
     try {
-        const result = await pool.query(
-            'INSERT INTO events (id, title, event_date, image, description, location) VALUES (, , , , , ) RETURNING *',
+        await pool.query(
+            'INSERT INTO events (id, title, event_date, image, description, location) VALUES ($1, $2, $3, $4, $5, $6)',
             [id, title, event_date, image, description, location]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true, id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add event' });
@@ -116,11 +112,11 @@ app.put('/api/events/:id', async (req, res) => {
     const { id } = req.params;
     const { title, event_date, image, description, location } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE events SET title=, event_date=, image=, description=, location= WHERE id= RETURNING *',
+        await pool.query(
+            'UPDATE events SET title=$1, event_date=$2, image=$3, description=$4, location=$5 WHERE id=$6',
             [title, event_date, image, description, location, id]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update event' });
@@ -131,7 +127,7 @@ app.put('/api/events/:id', async (req, res) => {
 app.delete('/api/events/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await pool.query('DELETE FROM events WHERE id = ', [id]);
+        await pool.query('DELETE FROM events WHERE id = $1', [id]);
         res.json({ success: true });
     } catch (err) {
         console.error(err);
@@ -154,11 +150,11 @@ app.get('/api/team', async (req, res) => {
 app.post('/api/team', async (req, res) => {
     const { id, name, role, image, bio, email } = req.body;
     try {
-        const result = await pool.query(
-            'INSERT INTO team_members (id, name, role, image, bio, email) VALUES (, , , , , ) RETURNING *',
+        await pool.query(
+            'INSERT INTO team_members (id, name, role, image, bio, email) VALUES ($1, $2, $3, $4, $5, $6)',
             [id, name, role, image, bio, email]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true, id });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add team member' });
@@ -170,11 +166,11 @@ app.put('/api/team/:id', async (req, res) => {
     const { id } = req.params;
     const { name, role, image, bio, email } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE team_members SET name=, role=, image=, bio=, email= WHERE id= RETURNING *',
+        await pool.query(
+            'UPDATE team_members SET name=$1, role=$2, image=$3, bio=$4, email=$5 WHERE id=$6',
             [name, role, image, bio, email, id]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update team member' });
@@ -185,7 +181,7 @@ app.put('/api/team/:id', async (req, res) => {
 app.delete('/api/team/:id', async (req, res) => {
     const { id } = req.params;
     try {
-        await pool.query('DELETE FROM team_members WHERE id = ', [id]);
+        await pool.query('DELETE FROM team_members WHERE id = $1', [id]);
         res.json({ success: true });
     } catch (err) {
         console.error(err);
@@ -196,7 +192,7 @@ app.delete('/api/team/:id', async (req, res) => {
 // Get about info
 app.get('/api/about', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM about_info WHERE id = 1');
+        const result = await pool.query('SELECT content, image, contact FROM about_info WHERE id = 1');
         res.json(result.rows[0] || {});
     } catch (err) {
         console.error(err);
@@ -208,11 +204,11 @@ app.get('/api/about', async (req, res) => {
 app.put('/api/about', async (req, res) => {
     const { content, image, contact } = req.body;
     try {
-        const result = await pool.query(
-            'UPDATE about_info SET content=, image=, contact=, updated_at=CURRENT_TIMESTAMP WHERE id=1 RETURNING *',
+        await pool.query(
+            'UPDATE about_info SET content=$1, image=$2, contact=$3, updated_at=CURRENT_TIMESTAMP WHERE id=1',
             [content, image, contact]
         );
-        res.json(result.rows[0]);
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update about info' });
@@ -234,20 +230,19 @@ app.get('/api/settings', async (req, res) => {
 app.put('/api/settings', async (req, res) => {
     const { logo, title, subtitle, adminPassword } = req.body;
     try {
-        if (adminPassword) {
+        if (adminPassword && adminPassword.trim() !== '') {
             const hashedPassword = await bcrypt.hash(adminPassword, 10);
             await pool.query(
-                'UPDATE settings SET logo=, title=, subtitle=, admin_password=, updated_at=CURRENT_TIMESTAMP WHERE id=1',
+                'UPDATE settings SET logo=$1, title=$2, subtitle=$3, admin_password=$4, updated_at=CURRENT_TIMESTAMP WHERE id=1',
                 [logo, title, subtitle, hashedPassword]
             );
         } else {
             await pool.query(
-                'UPDATE settings SET logo=, title=, subtitle=, updated_at=CURRENT_TIMESTAMP WHERE id=1',
+                'UPDATE settings SET logo=$1, title=$2, subtitle=$3, updated_at=CURRENT_TIMESTAMP WHERE id=1',
                 [logo, title, subtitle]
             );
         }
-        const result = await pool.query('SELECT logo, title, subtitle FROM settings WHERE id = 1');
-        res.json(result.rows[0]);
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update settings' });
@@ -278,31 +273,18 @@ app.get('/api/health', (req, res) => {
 });
 
 
-// TEMPORARY RESET ENDPOINT - Remove after use
-app.post('/api/reset-admin', async (req, res) => {
+// Cleanup endpoint - remove bad team member
+app.delete('/api/cleanup-team/:id', async (req, res) => {
+    const { id } = req.params;
     try {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        await pool.query('UPDATE settings SET admin_password = $1 WHERE id = 1', [hashedPassword]);
-        res.json({ success: true, message: 'Password reset to admin123' });
+        await pool.query('DELETE FROM team_members WHERE id = $1', [id]);
+        res.json({ success: true, message: `Removed ${id} if it existed` });
     } catch (err) {
         res.status(500).json({ error: err.message });
     }
 });
 
-
-// TEMPORARY - Remove after use
-app.get('/reset-password', async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash('admin123', 10);
-        await pool.query('UPDATE settings SET admin_password = $1 WHERE id = 1', [hashedPassword]);
-        res.send('✅ Password reset to: admin123');
-    } catch (err) {
-        res.send('❌ Error: ' + err.message);
-    }
-});
-
 app.listen(port, () => {
-    console.log('Server running on port', port);
+    console.log(`Server running on port ${port}`);
 });
-
 
