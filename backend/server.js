@@ -38,18 +38,33 @@ app.get('/api/locations', async (req, res) => {
     }
 });
 
-// Add location
+// POST /api/locations - Add new location (FIXED)
 app.post('/api/locations', async (req, res) => {
     const { id, name, type, lat, lng, thumbnail, image, maps_link, description } = req.body;
+    
+    console.log('📝 Received location data:');
+    console.log('   Name:', name);
+    console.log('   Lat:', lat);
+    console.log('   Lng:', lng);
+    
+    const parsedLat = parseFloat(lat);
+    const parsedLng = parseFloat(lng);
+    
+    if (isNaN(parsedLat) || isNaN(parsedLng)) {
+        console.error('Invalid coordinates:', lat, lng);
+        return res.status(400).json({ error: 'Invalid coordinates. Please provide valid numbers.' });
+    }
+    
     try {
         const result = await pool.query(
-            'INSERT INTO locations (id, name, type, lat, lng, thumbnail, image, maps_link, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)',
-            [id, name, type, lat, lng, thumbnail, image, maps_link, description]
+            'INSERT INTO locations (id, name, type, lat, lng, thumbnail, image, maps_link, description) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *',
+            [id, name, type, parsedLat, parsedLng, thumbnail, image, maps_link, description]
         );
-        res.json({ success: true, id });
+        console.log('✅ Location saved with coordinates:', parsedLat, parsedLng);
+        res.json(result.rows[0]);
     } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Failed to add location' });
+        console.error('Database error:', err);
+        res.status(500).json({ error: 'Failed to add location: ' + err.message });
     }
 });
 
@@ -58,11 +73,11 @@ app.put('/api/locations/:id', async (req, res) => {
     const { id } = req.params;
     const { name, type, lat, lng, thumbnail, image, maps_link, description } = req.body;
     try {
-        await pool.query(
-            'UPDATE locations SET name=$1, type=$2, lat=$3, lng=$4, thumbnail=$5, image=$6, maps_link=$7, description=$8, updated_at=CURRENT_TIMESTAMP WHERE id=$9',
+        const result = await pool.query(
+            'UPDATE locations SET name=$1, type=$2, lat=$3, lng=$4, thumbnail=$5, image=$6, maps_link=$7, description=$8, updated_at=CURRENT_TIMESTAMP WHERE id=$9 RETURNING *',
             [name, type, lat, lng, thumbnail, image, maps_link, description, id]
         );
-        res.json({ success: true });
+        res.json(result.rows[0]);
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to update location' });
@@ -100,7 +115,7 @@ app.post('/api/events', async (req, res) => {
             'INSERT INTO events (id, title, event_date, image, description, location) VALUES ($1, $2, $3, $4, $5, $6)',
             [id, title, event_date, image, description, location]
         );
-        res.json({ success: true, id });
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add event' });
@@ -154,7 +169,7 @@ app.post('/api/team', async (req, res) => {
             'INSERT INTO team_members (id, name, role, image, bio, email) VALUES ($1, $2, $3, $4, $5, $6)',
             [id, name, role, image, bio, email]
         );
-        res.json({ success: true, id });
+        res.json({ success: true });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Failed to add team member' });
@@ -272,19 +287,6 @@ app.get('/api/health', (req, res) => {
     res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-
-// Cleanup endpoint - remove bad team member
-app.delete('/api/cleanup-team/:id', async (req, res) => {
-    const { id } = req.params;
-    try {
-        await pool.query('DELETE FROM team_members WHERE id = $1', [id]);
-        res.json({ success: true, message: `Removed ${id} if it existed` });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
-    }
-});
-
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
 });
-
