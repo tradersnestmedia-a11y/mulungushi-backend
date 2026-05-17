@@ -2235,3 +2235,112 @@ if (document.readyState === 'loading') {
 
 
 
+
+
+
+
+// ============ FIXED LOCATION PREVIEW ============
+function selectLocation(loc) {
+    console.log('selectLocation called with:', loc);
+    
+    if (!loc) {
+        console.error('No location provided');
+        return;
+    }
+    
+    // Update preview image
+    const previewImg = document.getElementById('previewImg');
+    if (previewImg) {
+        const imgUrl = loc.image || loc.thumbnail || 'https://picsum.photos/400/200';
+        previewImg.src = imgUrl;
+        previewImg.alt = loc.name || 'Location';
+        console.log('Preview image set to:', imgUrl);
+    }
+    
+    // Update preview name
+    const previewName = document.getElementById('previewName');
+    if (previewName) {
+        previewName.textContent = loc.name || 'Unknown Location';
+        console.log('Preview name set to:', loc.name);
+    }
+    
+    // Update preview description
+    const previewDesc = document.getElementById('previewDesc');
+    if (previewDesc) {
+        previewDesc.textContent = loc.description || 'No description available';
+        console.log('Preview description set');
+    }
+    
+    // Update preview type
+    const previewType = document.getElementById('previewType');
+    if (previewType) {
+        previewType.textContent = loc.type || 'Location';
+        console.log('Preview type set to:', loc.type);
+    }
+    
+    // Update map with coordinates if available
+    const mapFrame = document.getElementById('mapFrame');
+    const mode = document.getElementById('transportMode')?.value || 'driving';
+    
+    if (mapFrame) {
+        if (loc.lat && loc.lng && loc.lat !== 0 && loc.lng !== 0) {
+            const mapUrl = `https://www.google.com/maps?q=${loc.lat},${loc.lng}&output=embed`;
+            mapFrame.src = mapUrl;
+            console.log('Map updated with coordinates:', loc.lat, loc.lng);
+        } else if (loc.name) {
+            const mapUrl = `https://www.google.com/maps?q=${encodeURIComponent(loc.name)}+Mulungushi+University&output=embed`;
+            mapFrame.src = mapUrl;
+            console.log('Map updated with search:', loc.name);
+        }
+    }
+    
+    // Update directions link
+    const dirLink = document.getElementById('directionsLink');
+    if (dirLink) {
+        if (loc.lat && loc.lng && loc.lat !== 0 && loc.lng !== 0) {
+            dirLink.href = `https://www.google.com/maps/dir/Current+Location/${loc.lat},${loc.lng}/data=!4m2!4m1!3e0?travelmode=${mode}`;
+            console.log('Directions link updated with coordinates');
+        } else if (loc.name) {
+            dirLink.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc.name)}+Mulungushi+University`;
+            console.log('Directions link updated with search');
+        }
+    }
+}
+
+// Fix selectLocationById function
+function selectLocationById(id) {
+    console.log('selectLocationById called with id:', id);
+    const loc = locations.find(l => l.id == id);
+    if (loc) {
+        selectLocation(loc);
+    } else {
+        console.error('Location not found with id:', id);
+    }
+}
+
+// Fix gallery click handler
+function initGalleryClicks() {
+    console.log('Initializing gallery clicks...');
+    const galleryItems = document.querySelectorAll('.gallery-item');
+    console.log('Found gallery items:', galleryItems.length);
+    
+    galleryItems.forEach(item => {
+        item.removeEventListener('click', handleGalleryItemClick);
+        item.addEventListener('click', handleGalleryItemClick);
+    });
+}
+
+function handleGalleryItemClick(e) {
+    const id = this.getAttribute('data-id');
+    console.log('Gallery item clicked, id:', id);
+    if (id) {
+        selectLocationById(id);
+    }
+}
+
+// Call initGalleryClicks after gallery loads
+const originalRenderGallery = renderGallery;
+window.renderGallery = function() {
+    originalRenderGallery();
+    setTimeout(initGalleryClicks, 100);
+};
