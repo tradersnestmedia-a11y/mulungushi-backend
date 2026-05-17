@@ -2344,3 +2344,4 @@ window.renderGallery = function() {
     originalRenderGallery();
     setTimeout(initGalleryClicks, 100);
 };
+
