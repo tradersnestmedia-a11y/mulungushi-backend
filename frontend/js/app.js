@@ -1000,7 +1000,7 @@ document.getElementById('locationForm')?.addEventListener('submit', async (e) =>
         id: Date.now().toString(),
         name: document.getElementById('locName').value,
         type: document.getElementById('locType').value,
-        lat: -14.29, lng: 28.55,
+        lat: parseFloat(document.getElementById("locLat").value), lng: parseFloat(document.getElementById("locLng").value),
         thumbnail: document.getElementById('locThumb').value,
         image: document.getElementById('locImage').value,
         description: document.getElementById('locDesc').value
@@ -1072,7 +1072,7 @@ document.getElementById('editForm')?.addEventListener('submit', async (e) => {
             type: document.getElementById('editTypeVal').value,
             image: document.getElementById('editImage').value,
             description: document.getElementById('editDesc').value,
-            lat: -14.29, lng: 28.55,
+            lat: parseFloat(document.getElementById("locLat").value), lng: parseFloat(document.getElementById("locLng").value),
             thumbnail: document.getElementById('editImage').value
         });
     } else if (type === 'event') {
@@ -2344,4 +2344,5 @@ window.renderGallery = function() {
     originalRenderGallery();
     setTimeout(initGalleryClicks, 100);
 };
+
 
